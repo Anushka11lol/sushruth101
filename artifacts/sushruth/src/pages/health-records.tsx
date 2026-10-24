@@ -1,3 +1,7 @@
+import {
+  queueOfflineRecord,
+  syncOfflineQueue,
+} from "@/lib/offline-sync";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useUser } from "@clerk/react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -286,21 +290,49 @@ export default function HealthRecordsPage() {
     }
   }, [record]);
 
-  const handleSaveRecord = async () => {
-    const payload = {
-      userId,
-      ...formData,
-      height: formData.height ? Number(formData.height) : undefined,
-      weight: formData.weight ? Number(formData.weight) : undefined,
-    };
+ const handleSaveRecord = async () => {
+  const payload = {
+    userId,
+    ...formData,
+    height: formData.height
+      ? Number(formData.height)
+      : undefined,
+    weight: formData.weight
+      ? Number(formData.weight)
+      : undefined,
+  };
+
+  try {
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
+      queueOfflineRecord(userId, {
+        ...payload,
+        localId: crypto.randomUUID(),
+      });
+      setEditing(false);
+      return;
+    }
+
     if (record) {
       await updateRecord.mutateAsync({ data: payload });
     } else {
       await createRecord.mutateAsync({ data: payload });
     }
-    queryClient.invalidateQueries({ queryKey: getGetHealthRecordQueryKey({ userId }) });
+
+    // Retry queued records after a successful online save.
+    await syncOfflineQueue(userId, async (queuedPayload) => {
+      await createRecord.mutateAsync({ data: queuedPayload });
+    });
+
+    queryClient.invalidateQueries({
+      queryKey: getGetHealthRecordQueryKey({ userId }),
+    });
     setEditing(false);
-  };
+  } catch (error) {
+    // If the online save fails, preserve the record locally for retry.
+    queueOfflineRecord(userId, payload);
+    setEditing(false);
+  }
+};
 
   const handleAddSurgery = async () => {
     if (!surgeryForm.procedureName || !surgeryForm.date || !userId) return;
