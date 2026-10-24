@@ -1,10 +1,15 @@
+import {
+  getOfflineQueue,
+  type OfflineQueueItem,
+  queueOfflineRecord,
+  syncOfflineQueue,
+} from "@/lib/offline-sync";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useUser } from "@clerk/react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useGetHealthRecord,
   useCreateHealthRecord,
-  useUpdateHealthRecord,
   useListSurgeries,
   useCreateSurgery,
   useDeleteSurgery,
@@ -22,7 +27,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
@@ -163,11 +168,75 @@ export default function HealthRecordsPage() {
     { userId }, { query: { enabled: !!userId } as any },
   );
   const createRecord = useCreateHealthRecord();
-  const updateRecord = useUpdateHealthRecord();
   const createSurgery = useCreateSurgery();
   const deleteSurgery = useDeleteSurgery();
   const analyzeDocument = useAnalyzeHealthDocument();
   const analyzePatterns = useAnalyzeHealthPatterns();
+  type HealthRecordPayload = Parameters<typeof createRecord.mutateAsync>[0]["data"];
+  const [offlineQueue, setOfflineQueue] = useState<OfflineQueueItem<HealthRecordPayload>[]>([]);
+  const [offlineQueueError, setOfflineQueueError] = useState<string | null>(null);
+  const [isSyncingOfflineQueue, setIsSyncingOfflineQueue] = useState(false);
+  const [isOnline, setIsOnline] = useState(
+    () => typeof navigator === "undefined" || navigator.onLine,
+  );
+
+  const refreshOfflineQueue = () => {
+    if (!userId) {
+      setOfflineQueue([]);
+      return;
+    }
+    try {
+      setOfflineQueue(getOfflineQueue<HealthRecordPayload>(userId));
+      setOfflineQueueError(null);
+    } catch {
+      setOfflineQueueError("Saved offline data could not be read. It has not been changed.");
+    }
+  };
+
+  const retryOfflineQueue = async () => {
+    if (!userId || (typeof navigator !== "undefined" && !navigator.onLine)) return;
+    if (isSyncingOfflineQueue) return;
+    setIsSyncingOfflineQueue(true);
+    setOfflineQueueError(null);
+    try {
+      const result = await syncOfflineQueue<HealthRecordPayload>(
+        userId,
+        (payload) => createRecord.mutateAsync({ data: payload }),
+      );
+      refreshOfflineQueue();
+      if (result.synced > 0) {
+        void queryClient.invalidateQueries({
+          queryKey: getGetHealthRecordQueryKey({ userId }),
+        });
+      }
+      if (result.failed > 0) {
+        setOfflineQueueError("A saved change could not sync. It remains available to retry.");
+      }
+    } catch {
+      refreshOfflineQueue();
+      setOfflineQueueError("Saved offline data could not be synced. It remains available to retry.");
+    } finally {
+      setIsSyncingOfflineQueue(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      void retryOfflineQueue();
+    };
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    window.addEventListener("storage", refreshOfflineQueue);
+    refreshOfflineQueue();
+    if (navigator.onLine) void retryOfflineQueue();
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("storage", refreshOfflineQueue);
+    };
+  }, [userId]);
 
   const healthHistory = useMemo<HealthHistoryEvent[]>(() => {
     const events: HealthHistoryEvent[] = [];
@@ -287,19 +356,23 @@ export default function HealthRecordsPage() {
   }, [record]);
 
   const handleSaveRecord = async () => {
+    if (!userId) return;
     const payload = {
       userId,
       ...formData,
       height: formData.height ? Number(formData.height) : undefined,
       weight: formData.weight ? Number(formData.weight) : undefined,
     };
-    if (record) {
-      await updateRecord.mutateAsync({ data: payload });
-    } else {
-      await createRecord.mutateAsync({ data: payload });
+
+    try {
+      // Persist before attempting the network so a lost response remains retryable.
+      queueOfflineRecord<HealthRecordPayload>(userId, payload);
+      refreshOfflineQueue();
+      setEditing(false);
+      if (isOnline) await retryOfflineQueue();
+    } catch {
+      setOfflineQueueError("This change could not be saved locally. Keep this form open and try again.");
     }
-    queryClient.invalidateQueries({ queryKey: getGetHealthRecordQueryKey({ userId }) });
-    setEditing(false);
   };
 
   const handleAddSurgery = async () => {
@@ -635,6 +708,54 @@ export default function HealthRecordsPage() {
         </CardContent>
       </Card>
 
+      {(offlineQueue.length > 0 || offlineQueueError) && (
+        <Alert
+          className="border-teal-200 bg-teal-50/50"
+          data-testid="status-offline-health-records"
+        >
+          <Clock3 className="h-4 w-4 text-teal-700" aria-hidden="true" />
+          <AlertTitle>Health record sync</AlertTitle>
+          <AlertDescription className="space-y-3">
+            <p>
+              Offline changes are stored in this browser and are not encrypted.
+              This is a prototype; use synthetic health data only.
+            </p>
+            {offlineQueueError && (
+              <p role="status" data-testid="text-offline-sync-error">
+                {offlineQueueError}
+              </p>
+            )}
+            <ul className="space-y-2">
+              {offlineQueue.map((item) => (
+                <li
+                  key={item.localId}
+                  className="flex items-center justify-between gap-3 text-sm"
+                  data-testid={`status-offline-record-${item.localId}`}
+                >
+                  <span>Saved change</span>
+                  <Badge variant={item.status === "Failed" ? "destructive" : "outline"}>
+                    {item.status}
+                  </Badge>
+                </li>
+              ))}
+            </ul>
+            {offlineQueue.some((item) => item.status !== "Synced") && (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => void retryOfflineQueue()}
+                disabled={!isOnline || isSyncingOfflineQueue}
+                data-testid="button-retry-offline-sync"
+              >
+                <RefreshCw className={`mr-2 h-4 w-4 ${isSyncingOfflineQueue ? "animate-spin" : ""}`} aria-hidden="true" />
+                {isSyncingOfflineQueue ? "Syncing…" : isOnline ? "Retry sync" : "Waiting for connection"}
+              </Button>
+            )}
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Health Profile Card */}
       {isLoading ? (
         <Skeleton className="h-64 w-full" />
@@ -849,8 +970,8 @@ export default function HealthRecordsPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditing(false)}>Cancel</Button>
-            <Button onClick={handleSaveRecord} disabled={createRecord.isPending || updateRecord.isPending}>
-              {createRecord.isPending || updateRecord.isPending ? "Saving…" : "Save Profile"}
+            <Button onClick={handleSaveRecord} disabled={createRecord.isPending || isSyncingOfflineQueue}>
+              {createRecord.isPending || isSyncingOfflineQueue ? "Saving…" : "Save Profile"}
             </Button>
           </DialogFooter>
         </DialogContent>

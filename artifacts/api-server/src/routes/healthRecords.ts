@@ -35,12 +35,26 @@ router.post("/health-records", async (req, res) => {
     res.status(400).json({ error: "Invalid body" });
     return;
   }
+  const values = {
+    ...parsed.data,
+    height: parsed.data.height != null ? String(parsed.data.height) : null,
+    weight: parsed.data.weight != null ? String(parsed.data.weight) : null,
+  };
   const [record] = await db
     .insert(healthRecordsTable)
-    .values({
-      ...parsed.data,
-      height: parsed.data.height ? String(parsed.data.height) : null,
-      weight: parsed.data.weight ? String(parsed.data.weight) : null,
+    .values(values)
+    .onConflictDoUpdate({
+      target: healthRecordsTable.userId,
+      set: {
+        bloodGroup: values.bloodGroup ?? null,
+        allergies: values.allergies ?? null,
+        chronicConditions: values.chronicConditions ?? null,
+        currentMedications: values.currentMedications ?? null,
+        emergencyContact: values.emergencyContact ?? null,
+        height: values.height,
+        weight: values.weight,
+        updatedAt: new Date(),
+      },
     })
     .returning();
   res.status(201).json(record);
