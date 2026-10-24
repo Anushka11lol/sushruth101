@@ -304,10 +304,7 @@ export default function HealthRecordsPage() {
 
   try {
     if (typeof navigator !== "undefined" && !navigator.onLine) {
-      queueOfflineRecord(userId, {
-        ...payload,
-        localId: crypto.randomUUID(),
-      });
+      queueOfflineRecord(userId, payload);
       setEditing(false);
       return;
     }
