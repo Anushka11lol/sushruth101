@@ -1,0 +1,31 @@
+kind = "slides"
+previewPath = "/sushruth-deck/"
+title = "Sushruth - Feature Deck"
+version = "1.0.0"
+id = "artifacts/sushruth-deck"
+router = "path"
+
+[[integratedSkills]]
+name = "slides"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/sushruth-deck/" ]
+localPort = 18109
+
+[services.development]
+run = "pnpm --filter @workspace/sushruth-deck run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/sushruth-deck", "run", "build" ]
+publicDir = "artifacts/sushruth-deck/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18109"
+BASE_PATH = "/sushruth-deck/"

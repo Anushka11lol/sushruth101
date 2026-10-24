@@ -1,0 +1,7 @@
+torch>=2.13.0,<3
+torchvision>=0.28.0,<1
+onnx>=1.22.0,<2
+onnxruntime>=1.17.0
+numpy>=1.24.0
+Pillow>=12.3.0,<13
+tqdm>=4.66.3,<5

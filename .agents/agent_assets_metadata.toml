@@ -1,0 +1,129 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "AL-t8AqEuymrXTFPvp6wk"
+uri = "file://Sushruth_Hackathon_Pitch.docx"
+type = "word_document"
+title = "Sushruth — Hackathon Pitch Document"
+logical_id = "344894ee-abe5-46f9-b121-c53d19b79e62"
+
+[[outputs]]
+id = "FyOkBsedFrHm927hhyg_V"
+uri = "file://README.md"
+type = "text"
+title = "README.md — Sushruth AI Healthcare Assistant"
+logical_id = "73514bd6-1aae-4654-b499-9eacab1c5bb5"
+
+[[outputs]]
+id = "aVkWb_-bqcDHDkWNbDMgO"
+uri = "file://Sushruth_Tech_Report.md"
+type = "text"
+title = "Sushruth Technology Report"
+logical_id = "44f62a75-f86a-4939-b9f4-3c09ba72728c"
+
+[[outputs]]
+id = "RT-UwVl2D-gsw0Maf2d4Q"
+uri = "file://scripts/autoencoder/autoencoder_architecture.png"
+type = "image"
+title = "CNN Autoencoder — Input/Output Shape Diagram"
+logical_id = "1d6fb37b-8e9f-49ea-912a-ec7a52e115c3"
+
+[[outputs]]
+id = "TC7Iegi76kcLecTW_wzTN"
+uri = "file://scripts/autoencoder/anomaly_reconstruction_loss.png"
+type = "image"
+title = "Anomaly Detection — Reconstruction Data Loss Chart"
+logical_id = "0c3a7656-e397-470b-989c-146dff8570f6"
+
+[[outputs]]
+id = "Y4-oAjOdociDfOlhmeWaN"
+uri = "file://scripts/autoencoder/accuracy_comparison.png"
+type = "image"
+title = "Accuracy Comparison — 93.3% With CNN vs 99.8% Without"
+logical_id = "fe680e16-10b5-45e6-a880-6708d7864584"
+
+[[outputs]]
+id = "4nTCzy4IBkaqnSv9DVsPJ"
+uri = "file://scripts/autoencoder/overfitting_analysis.png"
+type = "image"
+title = "Overfitting Analysis — 4 Diagnostic Matrices"
+logical_id = "fcd6cf6c-77fd-48d9-9675-252eabb2213e"
+
+[[outputs]]
+id = "Uwm_hsjwfc-ns6s7dgf25"
+uri = "file://deliverables/Sushruth_Current_Features_and_Workflows.pdf"
+type = "pdf"
+title = "Sushruth — Features and Workflows"
+description = "14-page PDF covering the current Sushruth feature inventory, patient and doctor workflows, flow diagrams, architecture, security controls, limitations, and the updated Health Tracker."
+logical_id = "488cb410-655c-4158-8359-93ff86b5e6fe"
+content_hash = "sha256:71ea819692a40630e0e0850257c0b0a0dc5079f014ca8a183200be14020a2467"
+size = 340122
+mtime_ms = 1788519186644
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:d473d26b-11aa-410a-862a-beed2a0b8e2e/488cb410-655c-4158-8359-93ff86b5e6fe/81e0d2c5-89f7-4509-8585-b8f3273c5ef3"
+storage_version_token = "1788519196798340"
+content_type = "application/pdf"
+
+[[outputs]]
+id = "LCgAuzomnIhWJDz7ritit"
+uri = "file://deliverables/Sushruth-SIH26047-Judge-QA-Handbook.pdf"
+type = "pdf"
+title = "Sushruth SIH26047 Judge Q&A Handbook"
+description = "A 19-page, shareable preparation handbook with 95 judge questions and answers covering problem fit, workflow, clinical safety, AI, AYUSH, privacy, ABDM/FHIR, OCR, architecture, demos, deployment, innovation, and tough follow-ups."
+logical_id = "eb35222d-13e5-458f-b065-46b5d0d3010b"
+content_hash = "sha256:b11760d0a3b239b15205ac445cd34c1d1c397b3d78f9571c1fedd7e5f2482e00"
+size = 277838
+mtime_ms = 1789409375737
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:d473d26b-11aa-410a-862a-beed2a0b8e2e/eb35222d-13e5-458f-b065-46b5d0d3010b/19d75848-1f31-41c6-b64a-a4c59770321e"
+storage_version_token = "1789409449635062"
+content_type = "application/pdf"
+
+[[outputs]]
+id = "KbISTfK9WGU86Y2DcsSpK"
+uri = "file://deliverables/Sushruth-6-Person-SIH-Pitch-Script.pdf"
+type = "pdf"
+title = "Sushruth Six-Person SIH Pitch Script"
+description = "A four-page rehearsal script for six speakers, timed at approximately 4 minutes 20–35 seconds, with slide assignments, handoffs, demo coordination, and accuracy guardrails."
+logical_id = "23f54edb-6762-4360-b5cf-01add8e7947e"
+content_hash = "sha256:72620666cda39890001b7474505429eb8268a759c1fd0c873b97251b4a519b89"
+size = 73809
+mtime_ms = 1789409821597
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:d473d26b-11aa-410a-862a-beed2a0b8e2e/23f54edb-6762-4360-b5cf-01add8e7947e/ffb51a63-2841-4718-b7f9-d5c4b682c43a"
+storage_version_token = "1789409868598415"
+content_type = "application/pdf"
+
+[[outputs]]
+id = "MQcBQsqDNfdIswcr9cjGO"
+uri = "file://deliverables/Sushruth-3-Minute-Demo-Video-Script.pdf"
+type = "pdf"
+title = "Sushruth 3-Minute Demo Video Script"
+description = "A three-page, timestamped screen-recording script covering the complete patient-to-doctor workflow, accessibility, adaptive intake, AYUSH, reports, records, daily care tools, Care Circle, privacy, and current product boundaries."
+logical_id = "3a59b6fa-f682-4787-8596-79a99a30bd34"
+content_hash = "sha256:75cac8cd2f1fffaa3d2162af2c57f3657a00e320aafa22b9c1bfa14253b53f3f"
+size = 54390
+mtime_ms = 1789446997321
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:d473d26b-11aa-410a-862a-beed2a0b8e2e/3a59b6fa-f682-4787-8596-79a99a30bd34/12cfea62-0c85-463f-9d70-a9a15ff5d513"
+storage_version_token = "1789447030916061"
+content_type = "application/pdf"
+
+[[outputs]]
+id = "sfQhOCo4xmC1jpl-InnZv"
+uri = "file://artifacts/sushruth-demo-video/public/audio/bg_music.mp3"
+type = "audio"
+title = "Sushruth background music"
+description = "Generated music: Cinematic uplifting instrumental background music scoring a mission-driven healthcare technology product demonstration. Soft piano, warm strings, light Indian acoustic percussion tex…"
+logical_id = "b898ed12-c8f2-48d4-b80f-e4d2ee92225e"
+
+[[outputs]]
+id = "K9WiZpbevTUJXM2Re4jco"
+uri = "file://deliverables/sushruth-sih-2026-demo-final.mp4"
+type = "video"
+title = "Sushruth SIH 2026 Demo Video"
+description = "Final 16:9 Full HD submission video for Team Invalid Syntax. Duration: 2:44, with anonymized product examples and supplied narration."
+logical_id = "320f41e4-3ec8-405a-9e55-41391b5fb02d"
+content_hash = "sha256:ccfa0e901512dcc2dc2051f146da49c079b53cdc076ae37f06f20835c403ec9d"
+size = 11496141
+mtime_ms = 1789627215137
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:d473d26b-11aa-410a-862a-beed2a0b8e2e/320f41e4-3ec8-405a-9e55-41391b5fb02d/af141940-d17e-47bb-8e93-792d5dc8505f"
+storage_version_token = "1789627241137587"
+content_type = "video/mp4"

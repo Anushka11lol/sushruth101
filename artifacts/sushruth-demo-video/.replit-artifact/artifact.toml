@@ -1,0 +1,29 @@
+kind = "video"
+videoAspectRatio = "16:9"
+previewPath = "/sushruth-demo-video/"
+title = "Sushruth SIH Demo Video"
+description = "A high-resolution 16:9 product demonstration for the Smart India Hackathon portal, synchronized to the supplied narration and showing Sushruth workflows with anonymized patient examples."
+version = "1.0.0"
+id = "artifacts/sushruth-demo-video"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/sushruth-demo-video/" ]
+localPort = 21493
+
+[services.development]
+run = "pnpm --filter @workspace/sushruth-demo-video run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/sushruth-demo-video", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/sushruth-demo-video/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21493"
+BASE_PATH = "/sushruth-demo-video/"

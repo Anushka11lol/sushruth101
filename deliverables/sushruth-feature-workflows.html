@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sushruth — Current Feature Inventory and Workflows</title>
+  <style>
+    @page { size: A4; margin: 15mm 14mm 17mm; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #173a38; font: 10.2pt/1.48 Arial, sans-serif; background: white; }
+    h1, h2, h3, h4 { color: #0f5d55; margin: 0 0 8px; break-after: avoid; }
+    h1 { font-size: 28pt; line-height: 1.1; }
+    h2 { font-size: 19pt; border-bottom: 2px solid #b9ddd7; padding-bottom: 5px; margin-top: 8px; }
+    h3 { font-size: 14pt; margin-top: 13px; }
+    h4 { font-size: 11pt; margin-top: 10px; }
+    p { margin: 4px 0 8px; }
+    ul, ol { margin: 5px 0 10px 19px; padding: 0; }
+    li { margin: 2px 0; }
+    .cover { height: 260mm; display: flex; flex-direction: column; justify-content: center; padding: 22mm; margin: -15mm -14mm -17mm; color: white; background: linear-gradient(145deg,#075f56,#12a98f); page-break-after: always; }
+    .cover h1 { color: white; max-width: 155mm; }
+    .cover .kicker { letter-spacing: 2px; font-weight: bold; text-transform: uppercase; color: #c9fff3; margin-bottom: 12px; }
+    .cover .subtitle { font-size: 15pt; max-width: 150mm; color: #e8fffa; margin-top: 18px; }
+    .cover .meta { margin-top: 55mm; padding-top: 8mm; border-top: 1px solid rgba(255,255,255,.4); color: #ddfff7; }
+    .page { page-break-before: always; }
+    .section { margin-bottom: 13px; }
+    .toc { columns: 2; column-gap: 18mm; }
+    .toc div { break-inside: avoid; padding: 5px 0; border-bottom: 1px dotted #b8d5d0; }
+    .note, .status, .warning { border-radius: 8px; padding: 9px 11px; margin: 9px 0; break-inside: avoid; }
+    .note { background: #edf9f7; border-left: 4px solid #149b87; }
+    .status { background: #eef8ee; border-left: 4px solid #4b9c5a; }
+    .warning { background: #fff7e8; border-left: 4px solid #dc9329; color: #654310; }
+    .tag { display: inline-block; color: #08685c; background: #d9f2ed; border-radius: 20px; font-size: 8.6pt; font-weight: bold; padding: 3px 8px; margin: 2px 2px 2px 0; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .card { border: 1px solid #c8dfdb; border-radius: 9px; padding: 10px; break-inside: avoid; background: #fff; }
+    .card h3, .card h4 { margin-top: 0; }
+    .flow { margin: 11px 0 15px; padding: 12px; border: 1px solid #b9d8d3; border-radius: 10px; background: #f7fbfa; break-inside: avoid; }
+    .flow-title { font-weight: bold; color: #0f5d55; margin-bottom: 9px; }
+    .flow-row { display: flex; align-items: center; justify-content: center; gap: 5px; flex-wrap: wrap; }
+    .node { max-width: 39mm; min-width: 22mm; text-align: center; padding: 7px 8px; border: 1px solid #63aa9f; border-radius: 7px; background: white; color: #174b46; font-size: 8.7pt; }
+    .node.primary { color: white; background: #0e7569; border-color: #0e7569; }
+    .node.decision { border-radius: 20px; background: #fff9e8; border-color: #d9a237; }
+    .arrow { color: #168475; font-size: 15pt; font-weight: bold; }
+    .branch { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+    table { width: 100%; border-collapse: collapse; margin: 8px 0 13px; font-size: 9pt; break-inside: avoid; }
+    th { background: #0e7569; color: white; text-align: left; }
+    th, td { border: 1px solid #bad7d2; padding: 6px; vertical-align: top; }
+    tr:nth-child(even) td { background: #f4faf8; }
+    .small { font-size: 8.5pt; color: #486b67; }
+    .footer-note { margin-top: 18px; font-size: 8pt; color: #64817d; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <div class="kicker">Product specification</div>
+    <h1>Sushruth</h1>
+    <div class="subtitle">Current Feature Inventory, User Workflows and System Flow Diagrams</div>
+    <div class="meta">
+      <strong>Scope:</strong> Patient, doctor, child health, family care, OCR, AI triage, records, accessibility and emergency workflows<br>
+      <strong>Current update:</strong> Stress-level slider removed from the Health Tracker daily log<br>
+      <strong>Prepared:</strong> 4 September 2026
+    </div>
+  </section>
+
+  <section>
+    <h2>Document overview</h2>
+    <p>This document describes the functionality currently present in the Sushruth AI healthcare assistant. It separates implemented workflows from important boundaries and avoids presenting AI output as diagnosis or medical advice.</p>
+    <div class="status"><strong>Latest Health Tracker change:</strong> the stress-level slider has been removed. New daily logs retain date, water, sleep, activity, mood and symptoms. No hidden default stress score is submitted. Older stress values remain readable in historical entries.</div>
+    <h3>Contents</h3>
+    <div class="toc">
+      <div>1. Authentication and portal selection</div><div>2. Patient onboarding</div>
+      <div>3. Indian-language support</div><div>4. Accessibility</div>
+      <div>5. Patient dashboard</div><div>6. AI symptom triage</div>
+      <div>7. Pre-Consultation case-taking</div><div>8. Medical Reports</div>
+      <div>9. Prescriptions</div><div>10. Health Records</div>
+      <div>11. Health Tracker</div><div>12. Medications</div>
+      <div>13. Appointments and clinic search</div><div>14. Child Health</div>
+      <div>15. Care Circle</div><div>16. Caretaker/Nurse area</div>
+      <div>17. Doctor portal</div><div>18. Privacy and emergency access</div>
+      <div>19. System architecture</div><div>20. Current implementation boundaries</div>
+    </div>
+  </section>
+
+  <section class="page">
+    <h2>1. Authentication and portal selection</h2>
+    <div class="grid">
+      <div class="card"><h3>Authentication</h3><ul><li>Clerk registration and sign-in</li><li>Authenticated patient and doctor routes</li><li>Session-aware client cache clearing</li><li>Responsive sign-in and sign-up experience</li></ul></div>
+      <div class="card"><h3>Portal routing</h3><ul><li>Patient or Doctor portal selection</li><li>Role-specific navigation and dashboards</li><li>Patient onboarding checks</li><li>Existing users default to the Patient portal</li></ul></div>
+    </div>
+    <div class="flow"><div class="flow-title">Entry workflow</div><div class="flow-row"><span class="node primary">Open Sushruth</span><span class="arrow">→</span><span class="node decision">Signed in?</span><span class="arrow">→</span><span class="node">Authenticate</span><span class="arrow">→</span><span class="node decision">Portal role</span><span class="arrow">→</span><span class="node">Patient onboarding or Doctor dashboard</span></div></div>
+
+    <h2>2. Patient onboarding</h2>
+    <h3>Wellness questionnaire</h3>
+    <p>The initial questionnaire covers age group, known conditions, current feeling, sleep, general stress, energy, eating habits, physical activity, mental-wellbeing factors and the patient’s main health goal.</p>
+    <p>Its AI wellness snapshot can include a general summary, daily recommendations, sleep/stress/energy observations, goal reminder and an overall wellness score. Questionnaire answers and analysis are cached in the user’s browser.</p>
+    <h3>Language onboarding</h3>
+    <ul><li>Selection from 22 Indian languages</li><li>Native-script language names</li><li>Per-user persistence</li><li>RTL handling for Kashmiri, Urdu and other configured RTL languages</li></ul>
+    <div class="flow"><div class="flow-title">Patient onboarding</div><div class="flow-row"><span class="node">Patient portal</span><span class="arrow">→</span><span class="node">Wellness questionnaire</span><span class="arrow">→</span><span class="node">AI wellness snapshot</span><span class="arrow">→</span><span class="node">Language selection</span><span class="arrow">→</span><span class="node primary">Dashboard</span></div></div>
+  </section>
+
+  <section class="page">
+    <h2>3. Indian-language support</h2>
+    <p><span class="tag">English</span><span class="tag">Hindi</span><span class="tag">Bengali</span><span class="tag">Telugu</span><span class="tag">Marathi</span><span class="tag">Tamil</span><span class="tag">Urdu</span><span class="tag">Gujarati</span><span class="tag">Kannada</span><span class="tag">Malayalam</span><span class="tag">Odia</span><span class="tag">Punjabi</span><span class="tag">Assamese</span><span class="tag">Maithili</span><span class="tag">Sanskrit</span><span class="tag">Nepali</span><span class="tag">Konkani</span><span class="tag">Manipuri</span><span class="tag">Sindhi</span><span class="tag">Kashmiri</span><span class="tag">Bodo</span><span class="tag">Santali</span></p>
+    <h3>Language-aware capabilities</h3>
+    <ul><li>Localized shared navigation and major patient-feature labels</li><li>Kashmiri RTL; Bodo and Santali LTR</li><li>Language persistence across navigation and reload</li><li>Language-aware AI triage, report simplification, prescription interpretation, document analysis and wellness results</li><li>Localized Pre-Consultation stages for Kashmiri, Bodo and Santali</li><li>Speech-recognition locale selection and text-to-speech voice matching</li><li>Typed-input fallback where regional speech recognition is unavailable</li></ul>
+    <div class="warning"><strong>Browser dependency:</strong> speech recognition and speech synthesis rely on engines and voices installed by the browser/device. Native Kashmiri, Bodo or Santali speech cannot be guaranteed on every device.</div>
+
+    <h2>4. Accessibility</h2>
+    <div class="grid">
+      <div class="card"><h3>Navigation</h3><ul><li>Responsive desktop/mobile navigation</li><li>Skip-to-content link</li><li>Keyboard focus indicators</li><li>Semantic main navigation</li><li>Keyboard shortcuts and direct navigation</li></ul></div>
+      <div class="card"><h3>Reading support</h3><ul><li>Speak on focus or hover</li><li>Read-page control</li><li>Language-aware voice matching</li><li>Visible text remains available if speech is unsupported</li><li>Dark and light themes</li></ul></div>
+    </div>
+    <div class="flow"><div class="flow-title">Reading-assistance flow</div><div class="flow-row"><span class="node">Enable assistance</span><span class="arrow">→</span><span class="node">Focus or hover</span><span class="arrow">→</span><span class="node decision">Matching voice?</span></div><div class="branch"><div class="node">Yes: speak selected language</div><div class="node">No: closest voice + visible typed interface</div></div></div>
+  </section>
+
+  <section class="page">
+    <h2>5. Patient dashboard</h2>
+    <p>The dashboard reads current information from application APIs and summarizes:</p>
+    <ul><li>Recent triage sessions</li><li>Upcoming appointments</li><li>Active medications</li><li>Care Circle alerts</li><li>Wellness information and personalized greeting</li><li>Quick links to primary workflows</li><li>Loading and empty states</li></ul>
+
+    <h2>6. AI symptom triage</h2>
+    <div class="grid">
+      <div class="card"><h3>Input</h3><ul><li>Typed symptom description</li><li>Regional-language selection</li><li>Browser speech recognition</li><li>Transcript review, edit and retry</li><li>Speech-confidence handling</li></ul></div>
+      <div class="card"><h3>Result</h3><ul><li>Urgency level</li><li>Recommended medical specialty</li><li>Plain-language explanation</li><li>Suggested next action</li><li>Safety guidance</li><li>Nearby clinic and appointment actions</li></ul></div>
+    </div>
+    <p>Results are stored in triage history and can be reviewed or deleted. The AI is instructed not to diagnose or prescribe. Potential emergencies receive stronger escalation guidance.</p>
+    <div class="flow"><div class="flow-title">AI triage workflow</div><div class="flow-row"><span class="node">Choose language</span><span class="arrow">→</span><span class="node">Type or speak symptoms</span><span class="arrow">→</span><span class="node">Review transcript</span><span class="arrow">→</span><span class="node">AI urgency analysis</span><span class="arrow">→</span><span class="node decision">Urgent?</span></div><div class="branch"><div class="node">Emergency guidance</div><div class="node">Cautious guidance + specialist</div></div><div class="flow-row"><span class="node">Clinic search</span><span class="arrow">→</span><span class="node">Appointments</span><span class="arrow">→</span><span class="node primary">Saved history</span></div></div>
+  </section>
+
+  <section class="page">
+    <h2>7. Pre-Consultation patient case-taking</h2>
+    <table><thead><tr><th>Stage</th><th>Information and actions</th></tr></thead><tbody>
+      <tr><td>1. Basic information</td><td>Age, gender, selected patient language and basic demographic context.</td></tr>
+      <tr><td>2. Main problem</td><td>Primary complaint, onset, severity and voice-assisted text entry.</td></tr>
+      <tr><td>3. Medical history</td><td>Existing conditions, medicines, allergies and lifestyle information.</td></tr>
+      <tr><td>4. Detailed symptoms</td><td>Category, location, character, timing, severity and associated details.</td></tr>
+      <tr><td>5. AYUSH history</td><td>Appetite, sleep, bowel habits, Nidana/triggers, Prakriti, Vyayamashakti and Sattva.</td></tr>
+      <tr><td>6. Previous documents</td><td>Camera/file upload and OCR for reports and prescriptions.</td></tr>
+      <tr><td>7. Safety screening</td><td>Structured emergency questions and red-flag review.</td></tr>
+      <tr><td>8. Patient review</td><td>Review the complete patient-entered history before continuing.</td></tr>
+      <tr><td>Final summary</td><td>Structured summary, disclaimer, PNG/PDF export, Health Records shortcut, destination selection and explicit send confirmation.</td></tr>
+    </tbody></table>
+    <div class="flow"><div class="flow-title">Pre-Consultation workflow</div><div class="flow-row"><span class="node">Basic details</span><span class="arrow">→</span><span class="node">Complaint + HPI</span><span class="arrow">→</span><span class="node">History</span><span class="arrow">→</span><span class="node">Symptoms</span><span class="arrow">→</span><span class="node">AYUSH</span></div><div class="flow-row"><span class="node">Document OCR</span><span class="arrow">→</span><span class="node">Safety check</span><span class="arrow">→</span><span class="node">Patient review</span><span class="arrow">→</span><span class="node">Summary/export</span><span class="arrow">→</span><span class="node primary">Doctor handoff</span></div></div>
+    <div class="note"><strong>Clinical wording:</strong> the summary contains patient-reported information, not a diagnosis. A certified clinician must verify it.</div>
+  </section>
+
+  <section class="page">
+    <h2>8. Medical Reports</h2>
+    <ul><li>Add, categorize, view and delete reports</li><li>Manual text entry, camera capture or image upload</li><li>OCR text extraction</li><li>AI plain-language simplification</li><li>Abnormal-value presentation and suggested specialist category</li><li>Language-aware explanation while preserving raw names, values, dates and units</li><li>Authenticated ownership protection</li></ul>
+    <p><strong>Report categories:</strong> blood test, urine test, X-ray, MRI, CT, ECG, ultrasound, prescription, discharge summary and other.</p>
+    <div class="flow"><div class="flow-title">Report processing</div><div class="flow-row"><span class="node">Camera/file</span><span class="arrow">→</span><span class="node">Type and size validation</span><span class="arrow">→</span><span class="node">OCR</span><span class="arrow">→</span><span class="node">Patient review</span><span class="arrow">→</span><span class="node">AI simplification</span><span class="arrow">→</span><span class="node primary">Stored report</span></div></div>
+
+    <h2>9. Prescriptions</h2>
+    <ul><li>Printed and handwritten prescription uploads</li><li>Camera/file input</li><li>Prescriber, date, medicine, strength, dosage, frequency, duration and instruction extraction</li><li>Confidence indicators and unclear-text warnings</li><li>Patient review/edit before saving</li><li>Prescription history with view, update and delete</li><li>Ownership protection</li></ul>
+    <div class="note">Unreadable text is marked “unclear” rather than invented. Extracted medicines do not automatically activate a medication schedule.</div>
+    <div class="flow"><div class="flow-title">Prescription workflow</div><div class="flow-row"><span class="node">Upload image</span><span class="arrow">→</span><span class="node">OCR/handwriting extraction</span><span class="arrow">→</span><span class="node">Medicines + confidence</span><span class="arrow">→</span><span class="node decision">Patient confirms?</span><span class="arrow">→</span><span class="node primary">Save history</span></div></div>
+  </section>
+
+  <section class="page">
+    <h2>10. Health Records</h2>
+    <div class="grid">
+      <div class="card"><h3>Health profile</h3><ul><li>Blood group</li><li>Allergies</li><li>Chronic conditions</li><li>Current medications</li><li>Emergency contact</li><li>Height and weight</li></ul></div>
+      <div class="card"><h3>Surgery history</h3><ul><li>Procedure</li><li>Date</li><li>Hospital and surgeon</li><li>Notes</li><li>Persisted records and deletion</li></ul></div>
+    </div>
+    <h3>Medical-document analysis</h3>
+    <p>Camera/file upload, OCR, medication extraction, language-aware summary, warnings, confidence indicators and patient-reviewed application to the profile.</p>
+    <h3>Longitudinal observations</h3>
+    <p>Eligible history can be combined to identify cautious recurring observations. Wording avoids diagnosis and causation, requires sufficient history and uses cached analysis where appropriate.</p>
+    <div class="flow"><div class="flow-title">Health-record workflow</div><div class="flow-row"><span class="node">Create/view profile</span><span class="arrow">→</span><span class="node decision">Add source</span></div><div class="branch"><div class="node">Document → OCR → review → apply</div><div class="node">Surgery → details → save</div></div><div class="flow-row"><span class="node">Combine eligible history</span><span class="arrow">→</span><span class="node primary">Cautious recurring observations</span></div></div>
+
+    <h2>11. Health Tracker</h2>
+    <h3>Current daily log</h3>
+    <p><span class="tag">Date</span><span class="tag">Water</span><span class="tag">Sleep</span><span class="tag">Activity</span><span class="tag">Mood</span><span class="tag">Symptoms</span></p>
+    <div class="status"><strong>Stress slider removed:</strong> new logs do not submit a stress score. Historical stress values remain visible when present.</div>
+    <h3>History and insights</h3>
+    <ul><li>Recent daily health timeline</li><li>Weekly average sleep and hydration</li><li>AI trend summary and cautious risk indicator</li><li>Personalized tips based on available fields</li></ul>
+    <div class="flow"><div class="flow-title">Daily tracker workflow</div><div class="flow-row"><span class="node">Log Today</span><span class="arrow">→</span><span class="node">Date</span><span class="arrow">→</span><span class="node">Water + sleep</span><span class="arrow">→</span><span class="node">Activity + mood</span><span class="arrow">→</span><span class="node">Symptoms</span><span class="arrow">→</span><span class="node primary">Save + refresh insights</span></div></div>
+  </section>
+
+  <section class="page">
+    <h2>12. Medications</h2>
+    <ul><li>Add medicine name, dosage, frequency, dates and instructions</li><li>Active/inactive status and history</li><li>Update, stop or delete a medication</li><li>Dashboard integration</li><li>Prescription OCR remains review-only and does not automatically create active medicines</li></ul>
+
+    <h2>13. Appointments and clinic search</h2>
+    <ul><li>Browse and filter doctors by specialty and city</li><li>View hospital information</li><li>Select date/time and enter consultation reason</li><li>Book and view upcoming/past appointments</li><li>Update status or cancel</li><li>Google Maps clinic search</li><li>Location-based nearby search with manual fallback</li></ul>
+    <div class="flow"><div class="flow-title">Appointment workflow</div><div class="flow-row"><span class="node">Specialist result or Appointments</span><span class="arrow">→</span><span class="node">Search specialty/city</span><span class="arrow">→</span><span class="node">Select doctor</span><span class="arrow">→</span><span class="node">Date/time + reason</span><span class="arrow">→</span><span class="node primary">Booked appointment</span></div></div>
+    <div class="warning"><strong>Boundary:</strong> there is no payment, video consultation, hospital scheduling integration or real-time external slot inventory.</div>
+
+    <h2>14. Child Health</h2>
+    <h3>Child and guardian profiles</h3>
+    <ul><li>Name, date of birth, sex and blood group</li><li>Guardian relationship and access levels</li><li>Multiple linked guardians through Care Circle relationships</li></ul>
+    <h3>Vaccination tracking</h3>
+    <ul><li>Separate UIP/NIS and IAP-ACVIP 2025 schedules</li><li>DOB-derived dose dates</li><li>Upcoming, due, overdue and completed states</li><li>Administration date, provider, batch and notes</li><li>Manual immunizations stored separately from generated schedule entries</li><li>Responsive status dialog and duplicate-resistant schedule generation</li></ul>
+    <div class="flow"><div class="flow-title">Vaccination workflow</div><div class="flow-row"><span class="node">Create child profile</span><span class="arrow">→</span><span class="node">Enter DOB</span><span class="arrow">→</span><span class="node decision">UIP/NIS or IAP</span><span class="arrow">→</span><span class="node">Calculate due dates</span><span class="arrow">→</span><span class="node">Track dose status</span><span class="arrow">→</span><span class="node primary">Record administration</span></div></div>
+  </section>
+
+  <section class="page">
+    <h2>15. Care Circle</h2>
+    <ul><li>Add family members and caregivers</li><li>Relationship, role and linked-user tracking</li><li>Member workspace and access management</li><li>Assign duties and add daily-care logs</li><li>Shared care history</li><li>Medication-related care alerts</li><li>Private caretaker-document vault</li><li>Manual identity-verification submission</li><li>Care-plan tracking</li></ul>
+    <div class="note">Care alerts are generated when the relevant endpoint is read; this is not yet a background push-notification pipeline.</div>
+
+    <h2>16. Caretaker/Nurse area</h2>
+    <div class="grid">
+      <div class="card"><h3>Registration</h3><ul><li>Legal name and worker type</li><li>Phone and agency</li><li>Shift</li><li>Assigned family member</li><li>Duties</li></ul></div>
+      <div class="card"><h3>Workspace</h3><ul><li>Assigned duties</li><li>Shared daily-care logs</li><li>Care Circle linkage</li><li>Shift and agency details</li><li>Verification status</li></ul></div>
+    </div>
+    <h3>Verification safeguards and private vault</h3>
+    <ul><li>Manual verification only</li><li>No claim of automated Aadhaar or police verification</li><li>Badge shown only after a verified record state</li><li>No full government ID number should be stored</li><li>Validated private uploads with ownership checks and short-lived signed URLs</li></ul>
+    <div class="flow"><div class="flow-title">Care workflow</div><div class="flow-row"><span class="node">Add caretaker/nurse</span><span class="arrow">→</span><span class="node">Manual identity submission</span><span class="arrow">→</span><span class="node decision">Reviewed?</span></div><div class="branch"><div class="node">Pending-review status</div><div class="node">Verified badge</div></div><div class="flow-row"><span class="node">Assign duties</span><span class="arrow">→</span><span class="node">Record daily care</span><span class="arrow">→</span><span class="node primary">Family shared log</span></div></div>
+  </section>
+
+  <section class="page">
+    <h2>17. Doctor portal</h2>
+    <ul><li>Doctor-specific dashboard</li><li>Assigned Pre-Consultation queue</li><li>Status filtering</li><li>Review patient-reported summary, history, AYUSH data and documents</li><li>Verification state and doctor notes</li><li>Mark consultation reviewed</li><li>Assigned-doctor ownership restrictions</li></ul>
+    <div class="flow"><div class="flow-title">Clinical handoff</div><div class="flow-row"><span class="node">Patient confirms summary</span><span class="arrow">→</span><span class="node">Pending submission</span><span class="arrow">→</span><span class="node">Assigned doctor queue</span><span class="arrow">→</span><span class="node">Clinical review</span><span class="arrow">→</span><span class="node">Notes + verification</span><span class="arrow">→</span><span class="node primary">Reviewed</span></div></div>
+    <div class="warning"><strong>Boundary:</strong> the system does not yet provide an independent medical-license or clinic-admin verification authority. Production use should add verified organization-based credentialing and assignment.</div>
+
+    <h2>18. Privacy and emergency access</h2>
+    <ul><li>Generate, regenerate and revoke an emergency access code</li><li>Owner-only code-management actions</li><li>Public lookup using a valid active code</li><li>Limited emergency health, contact, Care Circle and recent triage context</li><li>Clerk authentication and server identity matching for protected routes</li><li>Guardian, assigned-doctor and Care Circle ownership checks</li><li>Medical-image type and size validation</li><li>Private-document signed URLs</li></ul>
+    <div class="flow"><div class="flow-title">Emergency access</div><div class="flow-row"><span class="node">Patient enables code</span><span class="arrow">→</span><span class="node">Responder enters code</span><span class="arrow">→</span><span class="node decision">Valid and active?</span></div><div class="branch"><div class="node">No: deny access</div><div class="node">Yes: limited emergency summary</div></div><div class="flow-row"><span class="node">Patient may revoke/regenerate</span></div></div>
+  </section>
+
+  <section class="page">
+    <h2>19. Overall system architecture</h2>
+    <div class="flow"><div class="flow-title">Application architecture</div><div class="flow-row"><span class="node primary">Patient / Doctor / Caregiver</span><span class="arrow">→</span><span class="node">React + Vite app</span><span class="arrow">→</span><span class="node">Clerk authentication</span><span class="arrow">→</span><span class="node">Express API</span><span class="arrow">→</span><span class="node">Identity + Zod validation</span></div><div class="branch"><div class="node">PostgreSQL via Drizzle</div><div class="node">Private object storage</div><div class="node">AI triage/OCR analysis</div><div class="node">React Query UI refresh</div></div></div>
+    <table><thead><tr><th>Layer</th><th>Responsibility</th></tr></thead><tbody>
+      <tr><td>React/Vite client</td><td>Responsive interfaces, forms, navigation, language, accessibility and workflow presentation.</td></tr>
+      <tr><td>Clerk</td><td>User authentication, signed-in state and route protection.</td></tr>
+      <tr><td>Express API</td><td>Validation, authorization, workflow orchestration and API responses.</td></tr>
+      <tr><td>PostgreSQL/Drizzle</td><td>Health, portal, appointment, child, vaccination and care records.</td></tr>
+      <tr><td>Object storage</td><td>Private uploaded documents using metadata and signed access URLs.</td></tr>
+      <tr><td>AI services</td><td>Non-diagnostic triage, OCR-assisted extraction, simplification and cautious observations.</td></tr>
+    </tbody></table>
+
+    <h2>20. Current implementation boundaries</h2>
+    <ul><li>No hospital appointment-inventory integration</li><li>No payments or video consultations</li><li>No automated government-ID, police or medical-license verification</li><li>No clinic/hospital organization administration</li><li>No background push-notification service</li><li>Ambulance 108 integration remains halted</li><li>No comprehensive clinical audit-log system</li><li>Dependency-security remediation remains incomplete</li></ul>
+    <div class="note"><strong>Core implemented areas:</strong> patient and doctor portals, onboarding, multilingual navigation, accessibility aids, symptom triage, Pre-Consultation, OCR-assisted reports and prescriptions, health records, daily tracker, medications, appointments, child vaccination, Care Circle, caretaker workflows and emergency-access management.</div>
+    <p class="footer-note">Sushruth is a health-information and care-coordination assistant. AI-generated content must not be treated as diagnosis, medical advice or a substitute for evaluation by a qualified healthcare professional.</p>
+  </section>
+</body>
+</html>

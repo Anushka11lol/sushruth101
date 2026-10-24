@@ -1,0 +1,4 @@
+- [Longitudinal health observations](longitudinal-health-observations.md) — recurring patterns require repeated records, cautious wording, and cached analysis; never imply diagnosis or causation.
+- [Accessibility speech engines](multilingual-accessibility-audio.md) — use browser speech globally; reserve generated multilingual audio for the Pre-Consultation workflow.
+- [Expected 404 queries in route guards](expected-404-query-guards.md) — avoid duplicate observers for expected 404s; remounts can cause request loops and blank guarded pages.
+- [Dependency audit inventory](dependency-audit-inventory.md) — Python requirement scans do not verify installed versions; check runtime metadata separately.

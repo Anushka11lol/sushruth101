@@ -1,0 +1,64 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-brand-teal: #107575;
+  --color-brand-teal-light: #E6F2F2;
+  --color-brand-teal-dark: #0A4A4A;
+  --color-brand-accent: #E58D00;
+  --color-brand-bg: #FCFAF8;
+  --color-brand-fg: #283C3C;
+  --color-brand-border: #E8E2D9;
+  
+  --font-sans: 'Outfit', 'Inter', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+@layer base {
+  @font-face {
+    font-family: 'Outfit';
+    src: url('https://fonts.gstatic.com/s/outfit/v11/QGYyz_MVcBeNP4NJtEtq.woff2') format('woff2');
+    font-weight: 100 900;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Inter';
+    src: url('https://fonts.gstatic.com/s/inter/v13/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2') format('woff2');
+    font-weight: 100 900;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Space Mono';
+    src: url('https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-brand-bg);
+  color: var(--color-brand-fg);
+  font-family: var(--font-sans);
+  overflow: hidden;
+}
+
+/* Base styles for the UI components in video */
+.ui-card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid var(--color-brand-border);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.ui-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-brand-teal-light);
+  color: var(--color-brand-teal);
+}
