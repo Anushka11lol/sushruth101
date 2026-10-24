@@ -3,8 +3,7 @@
  * Sushruth offline-first health-record queue.
  *
  * Prototype only: localStorage is not encrypted.
- * Use synthetic data only until secure storage and server-side
- * idempotency are implemented.
+ * Use synthetic data only; localStorage is not secure medical-data storage.
  */
 
 export type OfflineRecordStatus = "Pending" | "Failed" | "Synced";
@@ -12,7 +11,7 @@ export type OfflineRecordStatus = "Pending" | "Failed" | "Synced";
 export interface OfflineQueueItem<TPayload = Record<string, unknown>> {
   localId: string;
   userId: string;
-  payload: TPayload;
+  payload?: TPayload;
   status: OfflineRecordStatus;
   createdAt: string;
   updatedAt: string;
@@ -21,6 +20,7 @@ export interface OfflineQueueItem<TPayload = Record<string, unknown>> {
 }
 
 const STORAGE_PREFIX = "sushruth_offline_health_records_v1:";
+const syncingUsers = new Set<string>();
 
 function storageKey(userId: string): string {
   return `${STORAGE_PREFIX}${userId}`;
@@ -44,17 +44,30 @@ function readQueue<TPayload>(
 ): OfflineQueueItem<TPayload>[] {
   if (typeof window === "undefined" || !userId) return [];
 
-  try {
-    const raw = window.localStorage.getItem(storageKey(userId));
-    if (!raw) return [];
+  const raw = window.localStorage.getItem(storageKey(userId));
+  if (!raw) return [];
 
-    const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed)
-      ? (parsed as OfflineQueueItem<TPayload>[])
-      : [];
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
   } catch {
-    return [];
+    throw new Error("Offline queue data is unreadable; it was left unchanged.");
   }
+  if (
+    !Array.isArray(parsed) ||
+    parsed.some((item) =>
+      !item ||
+      typeof item.localId !== "string" ||
+      item.userId !== userId ||
+      !["Pending", "Failed", "Synced"].includes(item.status) ||
+      typeof item.createdAt !== "string" ||
+      typeof item.updatedAt !== "string" ||
+      (item.status !== "Synced" && !("payload" in item))
+    )
+  ) {
+    throw new Error("Offline queue data is invalid; it was left unchanged.");
+  }
+  return parsed as OfflineQueueItem<TPayload>[];
 }
 
 function writeQueue<TPayload>(
@@ -123,52 +136,66 @@ export async function syncOfflineQueue<TPayload>(
       remaining: queue.filter((item) => item.status !== "Synced").length,
     };
   }
+  if (syncingUsers.has(userId)) {
+    return {
+      synced: 0,
+      failed: 0,
+      remaining: queue.filter((item) => item.status !== "Synced").length,
+    };
+  }
 
   let synced = 0;
   let failed = 0;
+  syncingUsers.add(userId);
+  try {
+    while (true) {
+      queue = readQueue<TPayload>(userId);
+      const item = queue.find((current) => current.status !== "Synced");
+      if (!item) break;
+      if (!item.payload) {
+        throw new Error("Offline queue item has no retryable payload.");
+      }
 
-  for (const item of queue) {
-    if (item.status === "Synced") continue;
-
-    try {
-      await createOnServer(item.payload);
-
-      const now = new Date().toISOString();
-
-      queue = queue.map((current) =>
-        current.localId === item.localId
-          ? {
-              ...current,
-              status: "Synced",
-              updatedAt: now,
-              syncedAt: now,
-              lastError: undefined,
-            }
-          : current,
-      );
-
-      writeQueue(userId, queue);
-      synced += 1;
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Server sync failed.";
-
-      queue = queue.map((current) =>
-        current.localId === item.localId
-          ? {
-              ...current,
-              status: "Failed",
-              updatedAt: new Date().toISOString(),
-              lastError: message,
-            }
-          : current,
-      );
-
-      writeQueue(userId, queue);
-      failed += 1;
+      try {
+        await createOnServer(item.payload);
+        const now = new Date().toISOString();
+        queue = readQueue<TPayload>(userId).map((current) =>
+          current.localId === item.localId
+            ? {
+                ...current,
+                payload: undefined,
+                status: "Synced",
+                updatedAt: now,
+                syncedAt: now,
+                lastError: undefined,
+              }
+            : current,
+        );
+        writeQueue(userId, queue);
+        synced += 1;
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "Server sync failed.";
+        queue = readQueue<TPayload>(userId).map((current) =>
+          current.localId === item.localId
+            ? {
+                ...current,
+                status: "Failed",
+                updatedAt: new Date().toISOString(),
+                lastError: message,
+              }
+            : current,
+        );
+        writeQueue(userId, queue);
+        failed += 1;
+        break;
+      }
     }
+  } finally {
+    syncingUsers.delete(userId);
   }
 
+  queue = readQueue<TPayload>(userId);
   return {
     synced,
     failed,
